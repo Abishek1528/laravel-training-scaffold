@@ -13,13 +13,13 @@ class ProjectController extends Controller
         // TODO Day 5: replace with — return view('projects.index', ['projects' => Project::all()]);
         // TODO Day 6: add eager loading — Project::with('tasks')->get() — to fix N+1
         // TODO Day 8: scope to logged-in user — auth()->user()->projects
-        abort(501, 'TODO Day 2 — implement index');
+        return 'TODO Day 2 — implement index';
     }
 
     public function create()
     {
         // TODO Day 2 (stub) → Day 5: return view('projects.create');
-        abort(501, 'TODO Day 2 — implement create');
+        return 'TODO Day 2 — implement create';
     }
 
     public function store(Request $request)

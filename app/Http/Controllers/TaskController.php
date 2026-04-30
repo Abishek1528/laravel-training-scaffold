@@ -11,7 +11,7 @@ class TaskController extends Controller
     public function index(Project $project)
     {
         // TODO Day 5: return view('tasks.index', ['tasks' => $project->tasks]);
-        // TODO Day 6: eager load — $project->load('tasks.comments', 'tasks.assignee');
+            // TODO Day 6: eager load — $project->load('tasks.comments', 'tasks.assignee');
         abort(501, 'TODO Day 5 — implement task index');
     }
 

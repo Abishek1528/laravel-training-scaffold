@@ -15,14 +15,12 @@ Route::get('/', function () {
 });
 
 // TODO Day 2: define resource routes for projects and tasks
-//   - GET    /projects                      (index)
-//   - GET    /projects/create               (create form)
-//   - POST   /projects                      (store)
-//   - GET    /projects/{project}            (show)
-//   - GET    /projects/{project}/edit       (edit form)
-//   - PUT    /projects/{project}            (update)
-//   - DELETE /projects/{project}            (destroy)
-//   - Same set for /tasks (nested under projects, e.g., /projects/{project}/tasks)
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TaskController;
+
+Route::resource('projects', ProjectController::class);
+Route::resource('projects.tasks', TaskController::class);
+
 // Hint: Route::resource('projects', ProjectController::class);
 // Wrap them in auth middleware (after Day 8): Route::middleware('auth')->group(function () { ... });
 
