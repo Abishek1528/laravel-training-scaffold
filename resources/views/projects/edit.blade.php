@@ -1,12 +1,42 @@
 @extends('layouts.app')
 
 @section('content')
-    {{-- TODO Day 3: build the edit-project form layout --}}
-    {{-- TODO Day 5: pre-fill fields with $project values --}}
-    {{-- TODO Day 7: add @error directives --}}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h1 class="h4 mb-0">Edit Project</h1>
+                    </div>
+                    <div class="card-body">
+                        <form action="#" method="POST">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Project Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="Sample Project Name" required>
+                            </div>
 
-    <div class="container mx-auto py-8">
-        <h1 class="text-3xl font-bold">Edit Project</h1>
-        <p class="text-gray-500 mt-4">TODO Day 3 — project edit form goes here</p>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="4">Sample description text for the layout.</textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="active" selected>Active</option>
+                                    <option value="inactive">Inactive</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="#" class="btn btn-outline-secondary">Cancel</a>
+                                <button type="submit" class="btn btn-primary">Update Project</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
