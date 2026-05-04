@@ -10,51 +10,36 @@ class TaskController extends Controller
 {
     public function index(Project $project)
     {
-        // TODO Day 5: return view('tasks.index', ['tasks' => $project->tasks]);
-            // TODO Day 6: eager load — $project->load('tasks.comments', 'tasks.assignee');
-        abort(501, 'TODO Day 5 — implement task index');
+        return view('tasks.index');
     }
 
     public function create(Project $project)
     {
-        // TODO Day 5: return view('tasks.create', ['project' => $project]);
-        abort(501, 'TODO Day 5 — implement task create');
+        return view('tasks.create');
     }
 
     public function store(Request $request, Project $project)
     {
-        // TODO Day 5: $project->tasks()->create([...]);
-        // TODO Day 7: use StoreTaskRequest
-        // TODO Day 11: handle file upload — Storage::disk('public')->put(...)
         abort(501, 'TODO Day 5 — implement task store');
     }
 
-    public function show(Task $task)
+    public function show($id)
     {
-        // TODO Day 5: return view('tasks.show', ['task' => $task]);
-        abort(501, 'TODO Day 5 — implement task show');
+        return view('tasks.show');
     }
 
-    public function edit(Task $task)
+    public function edit($id)
     {
-        // TODO Day 5: return view('tasks.edit', ['task' => $task]);
-        // TODO Day 9: $this->authorize('update', $task);
-        abort(501, 'TODO Day 5 — implement task edit');
+        return view('tasks.edit');
     }
 
-    public function update(Request $request, Task $task)
+    public function update(Request $request, $id)
     {
-        // TODO Day 5: $task->update([...]);
-        // TODO Day 7: use UpdateTaskRequest
-        // TODO Day 9: $this->authorize('update', $task);
-        // TODO Day 11: when assigned_to_id changes, dispatch TaskAssigned mail (queued)
         abort(501, 'TODO Day 5 — implement task update');
     }
 
-    public function destroy(Task $task)
+    public function destroy($id)
     {
-        // TODO Day 5: $task->delete();
-        // TODO Day 9: $this->authorize('delete', $task);
         abort(501, 'TODO Day 5 — implement task destroy');
     }
 }
