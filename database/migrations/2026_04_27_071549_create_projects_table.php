@@ -10,11 +10,10 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            // TODO Day 4: add columns
-            //   - name (string)
-            //   - description (text, nullable)
-            //   - status (string, default 'active')
-            //   - user_id (foreignId, references users.id, onDelete cascade)
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('status')->default('active');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

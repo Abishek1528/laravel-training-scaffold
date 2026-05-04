@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('home');
+    return redirect()->route('projects.index');
 });
 
 // TODO Day 2: define resource routes for projects and tasks

@@ -10,10 +10,9 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            // TODO Day 4: add columns
-            //   - body (text)
-            //   - user_id (foreignId, references users.id, onDelete cascade)
-            //   - task_id (foreignId, references tasks.id, onDelete cascade)
+            $table->text('body');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('task_id')->constrained('tasks')->onDelete('cascade');
             $table->timestamps();
         });
     }
