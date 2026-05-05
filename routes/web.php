@@ -20,6 +20,10 @@ use App\Http\Controllers\TaskController;
 
 Route::resource('projects', ProjectController::class);
 Route::resource('projects.tasks', TaskController::class);
+Route::resource('tasks', TaskController::class)->only(['show', 'edit', 'update', 'destroy']);
+
+// Day 5: Comment storage
+Route::post('comments', [App\Http\Controllers\TaskController::class, 'storeComment'])->name('comments.store');
 
 // Hint: Route::resource('projects', ProjectController::class);
 // Wrap them in auth middleware (after Day 8): Route::middleware('auth')->group(function () { ... });

@@ -4,42 +4,90 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
     public function index(Project $project)
     {
-        return view('tasks.index');
+        // Day 6 TODO: eager load tasks.comments, tasks.assignee
+        $tasks = $project->tasks; 
+        return view('tasks.index', compact('project', 'tasks'));
     }
 
     public function create(Project $project)
     {
-        return view('tasks.create');
+        $users = User::all();
+        return view('tasks.create', compact('project', 'users'));
     }
 
     public function store(Request $request, Project $project)
     {
-        abort(501, 'TODO Day 5 — implement task store');
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'required|string|in:todo,in_progress,completed',
+            'due_date' => 'nullable|date',
+            'assigned_to_id' => 'nullable|exists:users,id',
+        ]);
+
+        $project->tasks()->create($validated);
+
+        return redirect()->route('projects.show', $project)->with('success', 'Task created successfully.');
     }
 
     public function show($id)
     {
-        return view('tasks.show');
+        $task = Task::with(['project', 'assignee', 'comments.user'])->findOrFail($id);
+        return view('tasks.show', compact('task'));
     }
 
     public function edit($id)
     {
-        return view('tasks.edit');
+        $task = Task::findOrFail($id);
+        $users = User::all();
+        return view('tasks.edit', compact('task', 'users'));
     }
 
     public function update(Request $request, $id)
     {
-        abort(501, 'TODO Day 5 — implement task update');
+        $task = Task::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'required|string|in:todo,in_progress,completed',
+            'due_date' => 'nullable|date',
+            'assigned_to_id' => 'nullable|exists:users,id',
+        ]);
+
+        $task->update($validated);
+
+        return redirect()->route('projects.show', $task->project_id)->with('success', 'Task updated successfully.');
     }
 
     public function destroy($id)
     {
-        abort(501, 'TODO Day 5 — implement task destroy');
+        $task = Task::findOrFail($id);
+        $projectId = $task->project_id;
+        $task->delete();
+
+        return redirect()->route('projects.show', $projectId)->with('success', 'Task deleted successfully.');
+    }
+
+    public function storeComment(Request $request)
+    {
+        $validated = $request->validate([
+            'body' => 'required|string',
+            'task_id' => 'required|exists:tasks,id',
+        ]);
+
+        $validated['user_id'] = User::first()->id ?? 1;
+
+        Comment::create($validated);
+
+        return back()->with('success', 'Comment added successfully.');
     }
 }

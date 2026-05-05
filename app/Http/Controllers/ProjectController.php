@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
     public function index()
     {
-        return view('projects.index');
+        $projects = Project::all();
+        return view('projects.index', compact('projects'));
     }
 
     public function create()
@@ -19,26 +21,52 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        abort(501, 'TODO Day 5 — implement store');
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'required|string|in:active,inactive,completed',
+        ]);
+
+        // For Day 5, we'll just pick a random user since auth isn't set up yet
+        $validated['user_id'] = User::first()->id ?? 1;
+
+        Project::create($validated);
+
+        return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }
 
     public function show($id)
     {
-        return view('projects.show');
+        $project = Project::findOrFail($id);
+        return view('projects.show', compact('project'));
     }
 
     public function edit($id)
     {
-        return view('projects.edit');
+        $project = Project::findOrFail($id);
+        return view('projects.edit', compact('project'));
     }
 
     public function update(Request $request, $id)
     {
-        abort(501, 'TODO Day 5 — implement update');
+        $project = Project::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'required|string|in:active,inactive,completed',
+        ]);
+
+        $project->update($validated);
+
+        return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
     }
 
     public function destroy($id)
     {
-        abort(501, 'TODO Day 5 — implement destroy');
+        $project = Project::findOrFail($id);
+        $project->delete();
+
+        return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
     }
 }
