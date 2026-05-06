@@ -10,7 +10,7 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::with('tasks')->get();
         return view('projects.index', compact('projects'));
     }
 
@@ -37,7 +37,7 @@ class ProjectController extends Controller
 
     public function show($id)
     {
-        $project = Project::findOrFail($id);
+        $project = Project::with(['tasks.comments', 'members'])->findOrFail($id);
         return view('projects.show', compact('project'));
     }
 

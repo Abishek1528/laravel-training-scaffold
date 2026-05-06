@@ -27,10 +27,11 @@
                                     <span class="badge bg-{{ $project->status === 'active' ? 'success' : ($project->status === 'completed' ? 'primary' : 'secondary') }}">
                                         {{ ucfirst($project->status) }}
                                     </span>
-                                    <small class="text-muted">{{ $project->tasks()->count() }} tasks</small>
+                                    <small class="text-muted">{{ $project->tasks->count() }} tasks</small>
                                 </div>
                             </div>
                             <div class="card-footer bg-transparent border-top-0 d-flex justify-content-end">
+                                <a href="{{ route('projects.show', $project) }}" class="btn btn-sm btn-outline-primary me-2">View</a>
                                 <a href="{{ route('projects.edit', $project) }}" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
                                 <form action="{{ route('projects.destroy', $project) }}" method="POST" onsubmit="return confirm('Are you sure?')">
                                     @csrf
