@@ -13,17 +13,22 @@ class StoreTaskRequest extends FormRequest
 
     public function rules(): array
     {
-        // TODO Day 7: define validation rules
-        // Hint:
-        //   'name' => 'required|string|max:255',
-        //   'description' => 'nullable|string',
-        //   'status' => 'required|in:active,archived,completed',
-        return [];
+        return [
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'required|string|in:todo,in_progress,completed',
+            'due_date' => 'nullable|date',
+            'assigned_to_id' => 'nullable|exists:users,id',
+        ];
     }
 
     public function messages(): array
     {
-        // TODO Day 7 (optional): customize error messages
-        return [];
+        return [
+            'title.required' => 'A task title is required.',
+            'status.in' => 'The selected status is invalid.',
+            'due_date.date' => 'The due date must be a valid date.',
+            'assigned_to_id.exists' => 'The selected user does not exist.',
+        ];
     }
 }
