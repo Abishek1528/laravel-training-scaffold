@@ -81,7 +81,7 @@
                             <input type="hidden" name="task_id" value="{{ $task->id }}">
                             <div class="mb-3">
                                 <label for="comment" class="form-label">Add a comment</label>
-                                <textarea class="form-control @error('body') is-invalid @enderror" id="comment" name="body" rows="3" placeholder="Write your comment here..."></textarea>
+                                <textarea class="form-control @error('body') is-invalid @enderror" id="comment" name="body" rows="3" placeholder="Write your comment here...">{{ old('body') }}</textarea>
                                 @error('body')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

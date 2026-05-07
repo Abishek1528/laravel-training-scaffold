@@ -6,6 +6,8 @@ use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\Comment;
+use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -23,15 +25,9 @@ class TaskController extends Controller
         return view('tasks.create', compact('project', 'users'));
     }
 
-    public function store(Request $request, Project $project)
+    public function store(StoreTaskRequest $request, Project $project)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'status' => 'required|string|in:todo,in_progress,completed',
-            'due_date' => 'nullable|date',
-            'assigned_to_id' => 'nullable|exists:users,id',
-        ]);
+        $validated = $request->validated();
 
         $project->tasks()->create($validated);
 
@@ -51,17 +47,11 @@ class TaskController extends Controller
         return view('tasks.edit', compact('task', 'users'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateTaskRequest $request, $id)
     {
         $task = Task::findOrFail($id);
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'status' => 'required|string|in:todo,in_progress,completed',
-            'due_date' => 'nullable|date',
-            'assigned_to_id' => 'nullable|exists:users,id',
-        ]);
+        $validated = $request->validated();
 
         $task->update($validated);
 

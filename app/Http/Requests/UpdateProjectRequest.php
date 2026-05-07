@@ -13,17 +13,18 @@ class UpdateProjectRequest extends FormRequest
 
     public function rules(): array
     {
-        // TODO Day 7: define validation rules
-        // Hint:
-        //   'name' => 'required|string|max:255',
-        //   'description' => 'nullable|string',
-        //   'status' => 'required|in:active,archived,completed',
-        return [];
+        return [
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'required|string|in:active,inactive,completed',
+        ];
     }
 
     public function messages(): array
     {
-        // TODO Day 7 (optional): customize error messages
-        return [];
+        return [
+            'name.required' => 'The project name cannot be empty.',
+            'status.in' => 'The selected status is invalid.',
+        ];
     }
 }
