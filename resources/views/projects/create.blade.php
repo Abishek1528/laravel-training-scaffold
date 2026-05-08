@@ -1,51 +1,79 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-white">
-                        <h1 class="h4 mb-0">New Project</h1>
+    <div class="py-12">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-8 border-b border-gray-200">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900">
+                            {{ __('Create New Project') }}
+                        </h2>
+                        <p class="mt-1 text-sm text-gray-600">
+                            {{ __('Enter the details below to start a new project.') }}
+                        </p>
                     </div>
-                    <div class="card-body">
-                        <form action="{{ route('projects.store') }}" method="POST">
-                            @csrf
-                            
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Project Name</label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
-                                @error('name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
 
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="4">{{ old('description') }}</textarea>
-                                @error('description')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    <form action="{{ route('projects.store') }}" method="POST">
+                        @csrf
+                        
+                        <!-- Project Name -->
+                        <div class="mb-6">
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ __('Project Name') }}
+                            </label>
+                            <input type="text" 
+                                   id="name" 
+                                   name="name" 
+                                   value="{{ old('name') }}" 
+                                   class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('name') border-red-500 @enderror" 
+                                   placeholder="e.g. Website Redesign">
+                            @error('name')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="status" class="form-label">Status</label>
-                                <select class="form-select @error('status') is-invalid @enderror" id="status" name="status">
-                                    <option value="active" {{ old('status') === 'active' ? 'selected' : '' }}>Active</option>
-                                    <option value="inactive" {{ old('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
-                                    <option value="completed" {{ old('status') === 'completed' ? 'selected' : '' }}>Completed</option>
-                                </select>
-                                @error('status')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                        <!-- Description -->
+                        <div class="mb-6">
+                            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ __('Description') }}
+                            </label>
+                            <textarea id="description" 
+                                      name="description" 
+                                      rows="4" 
+                                      class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('description') border-red-500 @enderror" 
+                                      placeholder="What is this project about?">{{ old('description') }}</textarea>
+                            @error('description')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
 
-                            <div class="d-flex justify-content-between">
-                                <a href="{{ route('projects.index') }}" class="btn btn-outline-secondary">Cancel</a>
-                                <button type="submit" class="btn btn-primary">Create Project</button>
-                            </div>
-                        </form>
-                    </div>
+                        <!-- Status -->
+                        <div class="mb-8">
+                            <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ __('Project Status') }}
+                            </label>
+                            <select id="status" 
+                                    name="status" 
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('status') border-red-500 @enderror">
+                                <option value="active" {{ old('status') === 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
+                                <option value="inactive" {{ old('status') === 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
+                                <option value="completed" {{ old('status') === 'completed' ? 'selected' : '' }}>{{ __('Completed') }}</option>
+                            </select>
+                            @error('status')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="flex items-center justify-end space-x-4">
+                            <a href="{{ route('projects.index') }}" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                                {{ __('Cancel') }}
+                            </a>
+                            <button type="submit" class="inline-flex items-center px-6 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm">
+                                {{ __('Create Project') }}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
