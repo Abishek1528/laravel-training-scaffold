@@ -1,82 +1,96 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Task: ') }} {{ $task->title }}
-            </h2>
-            <div class="flex space-x-2">
-                <a href="{{ route('projects.tasks.edit', [$task->project, $task]) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                    {{ __('Edit Task') }}
-                </a>
-            </div>
-        </div>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6 text-gray-900">
-                    <div class="mb-4">
-                        <h3 class="text-lg font-bold mb-2 text-gray-700 uppercase tracking-wider text-xs">{{ __('Description') }}</h3>
-                        <p class="text-gray-600">{{ $task->description ?: 'No description provided.' }}</p>
+@section('content')
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Projects</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('projects.show', $task->project_id) }}">{{ $task->project->name }}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Task Detail</li>
+                    </ol>
+                </nav>
+
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                        <div>
-                            <h3 class="text-lg font-bold mb-2 text-gray-700 uppercase tracking-wider text-xs">{{ __('Status') }}</h3>
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $task->status === 'completed' ? 'bg-green-100 text-green-800' : ($task->status === 'in_progress' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                {{ ucfirst(str_replace('_', ' ', $task->status)) }}
-                            </span>
+                @endif
+
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-top mb-3">
+                            <div>
+                                <h1 class="h3 mb-1">{{ $task->title }}</h1>
+                                <span class="badge rounded-pill bg-{{ $task->status === 'completed' ? 'success' : ($task->status === 'in_progress' ? 'primary' : 'warning text-dark') }}">
+                                    {{ ucfirst(str_replace('_', ' ', $task->status)) }}
+                                </span>
+                            </div>
+                            <div class="btn-group">
+                                <a href="{{ route('tasks.edit', $task) }}" class="btn btn-outline-secondary">Edit</a>
+                                <form action="{{ route('tasks.destroy', $task) }}" method="POST" onsubmit="return confirm('Are you sure?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                </form>
+                            </div>
                         </div>
-                        <div>
-                            <h3 class="text-lg font-bold mb-2 text-gray-700 uppercase tracking-wider text-xs">{{ __('Due Date') }}</h3>
-                            <p class="text-gray-600">{{ $task->due_date ? \Carbon\Carbon::parse($task->due_date)->format('M d, Y') : 'No due date' }}</p>
+
+                        <div class="mb-4">
+                            <h5 class="text-muted small text-uppercase fw-bold">Description</h5>
+                            <p>{{ $task->description ?? 'No description provided.' }}</p>
                         </div>
-                        <div>
-                            <h3 class="text-lg font-bold mb-2 text-gray-700 uppercase tracking-wider text-xs">{{ __('Assigned To') }}</h3>
-                            <p class="text-gray-600">{{ $task->assignee->name ?? 'Unassigned' }}</p>
+
+                        <div class="row">
+                            <div class="col-sm-6 mb-3">
+                                <h5 class="text-muted small text-uppercase fw-bold">Due Date</h5>
+                                <p>{{ $task->due_date ? \Carbon\Carbon::parse($task->due_date)->format('M d, Y') : 'No due date' }}</p>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <h5 class="text-muted small text-uppercase fw-bold">Assigned To</h5>
+                                <p>{{ $task->assignee->name ?? 'Unassigned' }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <h3 class="text-xl font-bold mb-4 text-gray-800">{{ __('Comments') }}</h3>
-                    
-                    @if($task->comments && $task->comments->count() > 0)
-                        <div class="space-y-4 mb-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Comments</h5>
+                    </div>
+                    <div class="card-body">
+                        @if($task->comments && $task->comments->count() > 0)
                             @foreach($task->comments as $comment)
-                                <div class="border-b border-gray-100 pb-4 last:border-0">
-                                    <div class="flex justify-between items-center mb-1">
-                                        <span class="font-bold text-sm text-gray-800">{{ $comment->user->name }}</span>
-                                        <span class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
+                                <div class="mb-3 pb-3 border-bottom">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="fw-bold">{{ $comment->user->name }}</span>
+                                        <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
                                     </div>
-                                    <p class="text-gray-700 text-sm">{{ $comment->body }}</p>
+                                    <p class="mb-0">{{ $comment->body }}</p>
                                 </div>
                             @endforeach
-                        </div>
-                    @else
-                        <p class="text-gray-500 text-center py-4">{{ __('No comments yet.') }}</p>
-                    @endif
-
-                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        @else
+                            <p class="text-muted text-center mb-0">No comments yet.</p>
+                        @endif
+                        
+                        <hr>
+                        
                         <form action="{{ route('comments.store') }}" method="POST">
                             @csrf
                             <input type="hidden" name="task_id" value="{{ $task->id }}">
-                            <div>
-                                <x-input-label for="body" :value="__('Add a comment')" />
-                                <textarea id="body" name="body" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="3" placeholder="Write your comment here...">{{ old('body') }}</textarea>
-                                <x-input-error :messages="$errors->get('body')" class="mt-2" />
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">Add a comment</label>
+                                <textarea class="form-control @error('body') is-invalid @enderror" id="comment" name="body" rows="3" placeholder="Write your comment here...">{{ old('body') }}</textarea>
+                                @error('body')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
-                            <div class="mt-4 flex justify-end">
-                                <x-primary-button>
-                                    {{ __('Post Comment') }}
-                                </x-primary-button>
-                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">Post Comment</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

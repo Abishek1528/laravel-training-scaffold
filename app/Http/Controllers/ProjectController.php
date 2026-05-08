@@ -12,7 +12,7 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = auth()->user()->projects()->with('tasks')->get();
+        $projects = Project::with('tasks')->get();
         return view('projects.index', compact('projects'));
     }
 
@@ -25,7 +25,10 @@ class ProjectController extends Controller
     {
         $validated = $request->validated();
 
-        $request->user()->projects()->create($validated);
+        // For Day 5, we'll just pick a random user since auth isn't set up yet
+        $validated['user_id'] = User::first()->id ?? 1;
+
+        Project::create($validated);
 
         return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }
