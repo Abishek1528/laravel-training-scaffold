@@ -12,7 +12,13 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::with('tasks')->get();
+        // Get projects the user owns AND projects they are a member of
+        $projects = auth()->user()->ownedProjects()
+            ->with('tasks')
+            ->get()
+            ->merge(auth()->user()->projects()->with('tasks')->get())
+            ->unique('id');
+
         return view('projects.index', compact('projects'));
     }
 
@@ -24,11 +30,12 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
         $validated = $request->validated();
+        $validated['user_id'] = auth()->id();
 
-        // For Day 5, we'll just pick a random user since auth isn't set up yet
-        $validated['user_id'] = User::first()->id ?? 1;
+        $project = Project::create($validated);
 
-        Project::create($validated);
+        // Also attach the creator as a member of the project
+        $project->members()->attach(auth()->id());
 
         return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }
