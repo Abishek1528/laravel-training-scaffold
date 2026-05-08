@@ -1,38 +1,50 @@
 <?php
 
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes — Laravel Training Scaffold
+| Web Routes
 |--------------------------------------------------------------------------
-| This file is intentionally minimal. You'll add routes day by day.
-| Search the codebase for "TODO Day X" to find your daily tasks.
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
 */
 
 Route::get('/', function () {
-    return redirect()->route('projects.index');
+    return redirect()->route('login');
 });
 
-// TODO Day 2: define resource routes for projects and tasks
-use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\TaskController;
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::resource('projects', ProjectController::class);
-Route::resource('projects.tasks', TaskController::class);
-Route::resource('tasks', TaskController::class)->only(['show', 'edit', 'update', 'destroy']);
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-// Day 5: Comment storage
-Route::post('comments', [App\Http\Controllers\TaskController::class, 'storeComment'])->name('comments.store');
+    // Projects Routes
+    Route::resource('projects', ProjectController::class);
+    
+    // Tasks Routes (Nested under Projects)
+    Route::get('projects/{project}/tasks', [TaskController::class, 'index'])->name('projects.tasks.index');
+    Route::get('projects/{project}/tasks/create', [TaskController::class, 'create'])->name('projects.tasks.create');
+    Route::post('projects/{project}/tasks', [TaskController::class, 'store'])->name('projects.tasks.store');
 
-// Hint: Route::resource('projects', ProjectController::class);
-// Wrap them in auth middleware (after Day 8): Route::middleware('auth')->group(function () { ... });
+    // Standalone Tasks Routes
+    Route::get('tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
+    Route::get('tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
+    Route::put('tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::delete('tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
-// TODO Day 8: install Breeze, then Breeze will add its own auth routes here
-// Run: composer require laravel/breeze --dev
-//      php artisan breeze:install blade
-//      npm install && npm run dev
-//      php artisan migrate
+    // Comment Route
+    Route::post('comments', [TaskController::class, 'storeComment'])->name('comments.store');
+});
 
-// TODO Day 9: protect admin-only routes with the CheckRole middleware
-// Example: Route::middleware(['auth', 'role:admin'])->group(function () { ... });
+require __DIR__.'/auth.php';
