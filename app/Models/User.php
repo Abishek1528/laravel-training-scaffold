@@ -27,12 +27,12 @@ class User extends Authenticatable
 
     public function projects()
     {
-        return $this->belongsToMany(Project::class, 'project_user');
+        return $this->hasMany(Project::class);
     }
 
-    public function ownedProjects()
+    public function memberProjects()
     {
-        return $this->hasMany(Project::class);
+        return $this->belongsToMany(Project::class, 'project_user');
     }
 
     public function assignedTasks()

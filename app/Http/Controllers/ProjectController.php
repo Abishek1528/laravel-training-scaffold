@@ -12,7 +12,7 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = auth()->user()->ownedProjects()->with('tasks')->get();
+        $projects = auth()->user()->projects()->with('tasks')->get();
         return view('projects.index', compact('projects'));
     }
 
@@ -25,7 +25,7 @@ class ProjectController extends Controller
     {
         $validated = $request->validated();
 
-        auth()->user()->ownedProjects()->create($validated);
+        $request->user()->projects()->create($validated);
 
         return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }

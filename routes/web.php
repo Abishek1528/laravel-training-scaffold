@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
@@ -29,15 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Projects
     Route::resource('projects', ProjectController::class);
-    
-    // Tasks (Nested under projects for index/create/store, or standalone for others)
-    Route::get('projects/{project}/tasks', [TaskController::class, 'index'])->name('projects.tasks.index');
-    Route::get('projects/{project}/tasks/create', [TaskController::class, 'create'])->name('projects.tasks.create');
-    Route::post('projects/{project}/tasks', [TaskController::class, 'store'])->name('projects.tasks.store');
-    
-    Route::resource('tasks', TaskController::class)->only(['show', 'edit', 'update', 'destroy']);
+    Route::resource('projects.tasks', TaskController::class);
     Route::post('comments', [TaskController::class, 'storeComment'])->name('comments.store');
 });
 
