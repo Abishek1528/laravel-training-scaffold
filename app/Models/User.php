@@ -15,7 +15,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        // TODO Day 9: add 'role' here once you create the migration
+        'role',
     ];
 
     protected $hidden = ['password', 'remember_token'];

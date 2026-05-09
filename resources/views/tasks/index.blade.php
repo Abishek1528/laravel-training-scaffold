@@ -66,12 +66,16 @@
                                             {{ $task->assignee->name ?? '-' }}
                                         </td>
                                         <td class="px-6 py-4 text-right space-x-2">
-                                            <a href="{{ route('tasks.edit', $task) }}" class="text-blue-600 hover:text-blue-800 font-medium">Edit</a>
-                                            <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Delete</button>
-                                            </form>
+                                            @can('update', $task)
+                                                <a href="{{ route('tasks.edit', $task) }}" class="text-blue-600 hover:text-blue-800 font-medium">Edit</a>
+                                            @endcan
+                                            @can('delete', $task)
+                                                <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Delete</button>
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach

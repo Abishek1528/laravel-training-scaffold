@@ -9,31 +9,27 @@ class ProjectPolicy
 {
     public function viewAny(User $user): bool
     {
-        // TODO Day 9: any logged-in user can view their own project list
-        return false;
+        return true;
     }
 
     public function view(User $user, Project $project): bool
     {
-        // TODO Day 9: only the owner OR a team member can view
-        return false;
+        // Allow all logged-in users to view any project
+        return true;
     }
 
     public function create(User $user): bool
     {
-        // TODO Day 9: any logged-in user can create projects
-        return false;
+        return true;
     }
 
     public function update(User $user, Project $project): bool
     {
-        // TODO Day 9: only the owner can update
-        return false;
+        return $user->id === $project->user_id;
     }
 
     public function delete(User $user, Project $project): bool
     {
-        // TODO Day 9: only the owner can delete
-        return false;
+        return $user->id === $project->user_id;
     }
 }

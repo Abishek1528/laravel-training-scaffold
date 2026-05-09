@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use App\Models\Task;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
@@ -45,6 +47,29 @@ Route::middleware('auth')->group(function () {
 
     // Comment Route
     Route::post('comments', [TaskController::class, 'storeComment'])->name('comments.store');
+
+    // Admin Only Routes
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/dashboard', function () {
+            $totalTasks = Task::count();
+            $totalUsers = User::count();
+            $recentTasks = Task::latest()->first();
+            $recentUsers = User::latest()->first();
+            $pendingTasksCount = Task::where('status', 'todo')->count();
+            $completedTasksCount = Task::where('status', 'completed')->count();
+            $pendingUsersCount = User::whereNull('email_verified_at')->count(); // Example metric
+
+            return view('adminhome', compact(
+                'totalTasks', 
+                'totalUsers', 
+                'recentTasks', 
+                'recentUsers', 
+                'pendingTasksCount', 
+                'completedTasksCount', 
+                'pendingUsersCount'
+            ));
+        })->name('admin.dashboard');
+    });
 });
 
 require __DIR__.'/auth.php';

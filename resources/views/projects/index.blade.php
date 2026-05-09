@@ -37,12 +37,16 @@
                                 </div>
                                 <div class="p-4 bg-gray-50 border-t flex justify-end space-x-2">
                                     <a href="{{ route('projects.show', $project) }}" class="text-sm text-blue-600 hover:text-blue-800">View</a>
-                                    <a href="{{ route('projects.edit', $project) }}" class="text-sm text-gray-600 hover:text-gray-800">Edit</a>
-                                    <form action="{{ route('projects.destroy', $project) }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-sm text-red-600 hover:text-red-800">Delete</button>
-                                    </form>
+                                    @can('update', $project)
+                                        <a href="{{ route('projects.edit', $project) }}" class="text-sm text-gray-600 hover:text-gray-800">Edit</a>
+                                    @endcan
+                                    @can('delete', $project)
+                                        <form action="{{ route('projects.destroy', $project) }}" method="POST" onsubmit="return confirm('Are you sure?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-sm text-red-600 hover:text-red-800">Delete</button>
+                                        </form>
+                                    @endcan
                                 </div>
                             </div>
                         @endforeach

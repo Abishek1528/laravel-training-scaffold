@@ -12,12 +12,8 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        // Get projects the user owns AND projects they are a member of
-        $projects = auth()->user()->ownedProjects()
-            ->with('tasks')
-            ->get()
-            ->merge(auth()->user()->projects()->with('tasks')->get())
-            ->unique('id');
+        // Now showing all projects to everyone
+        $projects = Project::with('tasks')->get();
 
         return view('projects.index', compact('projects'));
     }
@@ -43,18 +39,26 @@ class ProjectController extends Controller
     public function show($id)
     {
         $project = Project::with(['tasks.comments', 'members'])->findOrFail($id);
+        
+        $this->authorize('view', $project);
+
         return view('projects.show', compact('project'));
     }
 
     public function edit($id)
     {
         $project = Project::findOrFail($id);
+        
+        $this->authorize('update', $project);
+
         return view('projects.edit', compact('project'));
     }
 
     public function update(UpdateProjectRequest $request, $id)
     {
         $project = Project::findOrFail($id);
+
+        $this->authorize('update', $project);
 
         $validated = $request->validated();
 
@@ -66,6 +70,9 @@ class ProjectController extends Controller
     public function destroy($id)
     {
         $project = Project::findOrFail($id);
+
+        $this->authorize('delete', $project);
+
         $project->delete();
 
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');

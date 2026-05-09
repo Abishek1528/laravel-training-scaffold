@@ -37,12 +37,18 @@ class TaskController extends Controller
     public function show($id)
     {
         $task = Task::with(['project', 'assignee', 'comments.user'])->findOrFail($id);
+        
+        $this->authorize('view', $task);
+
         return view('tasks.show', compact('task'));
     }
 
     public function edit($id)
     {
         $task = Task::findOrFail($id);
+        
+        $this->authorize('update', $task);
+
         $users = User::all();
         return view('tasks.edit', compact('task', 'users'));
     }
@@ -50,6 +56,8 @@ class TaskController extends Controller
     public function update(UpdateTaskRequest $request, $id)
     {
         $task = Task::findOrFail($id);
+
+        $this->authorize('update', $task);
 
         $validated = $request->validated();
 
@@ -61,6 +69,9 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $task = Task::findOrFail($id);
+        
+        $this->authorize('delete', $task);
+
         $projectId = $task->project_id;
         $task->delete();
 
