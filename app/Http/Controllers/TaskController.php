@@ -85,7 +85,7 @@ class TaskController extends Controller
             'task_id' => 'required|exists:tasks,id',
         ]);
 
-        $validated['user_id'] = User::first()->id ?? 1;
+        $validated['user_id'] = auth()->id();
 
         Comment::create($validated);
 

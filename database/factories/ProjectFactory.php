@@ -2,25 +2,18 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Project>
- */
 class ProjectFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            'name' => $this->faker->sentence(3),
-            'description' => $this->faker->paragraph,
-            'status' => $this->faker->randomElement(['active', 'inactive', 'completed']),
-            'user_id' => \App\Models\User::factory(),
+            'name' => fake()->sentence(3),
+            'description' => fake()->paragraph(),
+            'status' => fake()->randomElement(['active', 'completed', 'on_hold']),
+            'user_id' => User::factory(),
         ];
     }
 }

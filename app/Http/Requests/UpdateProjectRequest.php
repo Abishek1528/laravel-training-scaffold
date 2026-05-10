@@ -16,15 +16,7 @@ class UpdateProjectRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|string|in:active,inactive,completed',
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'name.required' => 'The project name cannot be empty.',
-            'status.in' => 'The selected status is invalid.',
+            'status' => 'required|in:active,completed,on_hold',
         ];
     }
 }
