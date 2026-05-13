@@ -1,0 +1,14 @@
+.git
+.gitignore
+.env
+.env.local
+node_modules
+storage/logs/*.log
+storage/framework/views/*
+storage/framework/cache/*
+storage/framework/sessions/*
+public/storage
+.vscode
+.idea
+*.md
+!README.md
