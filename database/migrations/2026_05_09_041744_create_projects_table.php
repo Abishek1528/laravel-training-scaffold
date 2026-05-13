@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->enum('status', ['active', 'completed', 'on_hold'])->default('active');
+            $table->string('status')->default('active');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
