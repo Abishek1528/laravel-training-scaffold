@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: laravel-app
+    env: php
+    plan: free
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+    startCommand: vendor/bin/heroku-php-apache2 public/
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - fromDatabase:
+          name: laravel-db
+          property: host
+          envKey: DB_HOST
+      - fromDatabase:
+          name: laravel-db
+          property: port
+          envKey: DB_PORT
+      - fromDatabase:
+          name: laravel-db
+          property: database
+          envKey: DB_DATABASE
+      - fromDatabase:
+          name: laravel-db
+          property: user
+          envKey: DB_USERNAME
+      - fromDatabase:
+          name: laravel-db
+          property: password
+          envKey: DB_PASSWORD
+      - fromDatabase:
+          name: laravel-db
+          property: database
+          envKey: DATABASE_URL
+databases:
+  - name: laravel-db
+    databaseName: laravel
+    user: laravel
+    plan: free
