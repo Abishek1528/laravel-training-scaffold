@@ -6,8 +6,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\TaskController;
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+Route::post('/login', [AuthController::class, 'login'])->name('api.login');
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout'])->name('api.logout');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('projects', ProjectController::class)->names('api.projects');
