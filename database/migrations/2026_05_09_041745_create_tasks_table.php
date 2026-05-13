@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('status', ['todo', 'in_progress', 'completed'])->default('todo');
+            $table->string('status')->default('todo');
             $table->date('due_date')->nullable();
             $table->foreignId('assigned_to_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
