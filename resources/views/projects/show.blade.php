@@ -70,12 +70,26 @@
                         @if(isset($project->tasks) && $project->tasks->count() > 0)
                             <div class="space-y-4">
                                 @foreach($project->tasks as $task)
-                                    <a href="{{ route('tasks.show', $task) }}" class="block p-4 border rounded-lg hover:bg-gray-50 transition duration-150">
-                                        <div class="flex justify-between items-center mb-2">
-                                            <h4 class="font-bold text-blue-600">{{ $task->title }}</h4>
-                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-{{ $task->status === 'completed' ? 'green' : ($task->status === 'in_progress' ? 'blue' : 'yellow') }}-100 text-{{ $task->status === 'completed' ? 'green' : ($task->status === 'in_progress' ? 'blue' : 'yellow') }}-800">
-                                                {{ ucfirst(str_replace('_', ' ', $task->status)) }}
-                                            </span>
+                                    <div class="block p-4 border rounded-lg hover:bg-gray-50 transition duration-150">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <div>
+                                                <a href="{{ route('tasks.show', [$project, $task]) }}" class="font-bold text-blue-600 hover:text-blue-800">{{ $task->title }}</a>
+                                                <span class="ml-2 px-2 py-1 text-xs font-semibold rounded-full bg-{{ $task->status === 'completed' ? 'green' : ($task->status === 'in_progress' ? 'blue' : 'yellow') }}-100 text-{{ $task->status === 'completed' ? 'green' : ($task->status === 'in_progress' ? 'blue' : 'yellow') }}-800">
+                                                    {{ ucfirst(str_replace('_', ' ', $task->status)) }}
+                                                </span>
+                                            </div>
+                                            <div class="flex space-x-2">
+                                                @can('update', $task)
+                                                    <a href="{{ route('tasks.edit', [$project, $task]) }}" class="text-sm text-blue-600 hover:text-blue-800">Edit</a>
+                                                @endcan
+                                                @can('delete', $task)
+                                                    <form action="{{ route('tasks.destroy', [$project, $task]) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-sm text-red-600 hover:text-red-800">Delete</button>
+                                                    </form>
+                                                @endcan
+                                            </div>
                                         </div>
                                         <p class="text-sm text-gray-600 mb-3">{{ Str::limit($task->description, 100) }}</p>
                                         <div class="flex justify-between items-center text-xs text-gray-500">
@@ -84,7 +98,7 @@
                                                 <span>Assigned: {{ $task->assignee->name }}</span>
                                             @endif
                                         </div>
-                                    </a>
+                                    </div>
                                 @endforeach
                             </div>
                         @else

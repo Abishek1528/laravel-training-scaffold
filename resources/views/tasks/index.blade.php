@@ -51,7 +51,7 @@
                                 @foreach($tasks as $task)
                                     <tr class="bg-white border-b hover:bg-gray-50">
                                         <td class="px-6 py-4">
-                                            <a href="{{ route('tasks.show', $task) }}" class="font-bold text-gray-900 hover:text-blue-600">{{ $task->title }}</a>
+                                            <a href="{{ route('tasks.show', [$project, $task]) }}" class="font-bold text-gray-900 hover:text-blue-600">{{ $task->title }}</a>
                                             <div class="text-xs text-gray-500">{{ Str::limit($task->description, 50) }}</div>
                                         </td>
                                         <td class="px-6 py-4">
@@ -67,10 +67,10 @@
                                         </td>
                                         <td class="px-6 py-4 text-right space-x-2">
                                             @can('update', $task)
-                                                <a href="{{ route('tasks.edit', $task) }}" class="text-blue-600 hover:text-blue-800 font-medium">Edit</a>
+                                                <a href="{{ route('tasks.edit', [$project, $task]) }}" class="text-blue-600 hover:text-blue-800 font-medium">Edit</a>
                                             @endcan
                                             @can('delete', $task)
-                                                <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure?')">
+                                                <form action="{{ route('tasks.destroy', [$project, $task]) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Delete</button>

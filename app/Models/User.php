@@ -41,7 +41,4 @@ class User extends Authenticatable
         return $this->hasMany(Task::class, 'assigned_to_id');
     }
 
-    // TODO Day 10: add HasApiTokens trait (after installing Sanctum)
-    //   use Laravel\Sanctum\HasApiTokens;
-    //   then add HasApiTokens to the use statement on line 12
 }

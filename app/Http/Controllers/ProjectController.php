@@ -36,28 +36,24 @@ class ProjectController extends Controller
         return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }
 
-    public function show($id)
+    public function show(Project $project)
     {
-        $project = Project::with(['tasks.comments', 'members'])->findOrFail($id);
+        $project->load(['tasks.comments', 'members']);
         
         $this->authorize('view', $project);
 
         return view('projects.show', compact('project'));
     }
 
-    public function edit($id)
+    public function edit(Project $project)
     {
-        $project = Project::findOrFail($id);
-        
         $this->authorize('update', $project);
 
         return view('projects.edit', compact('project'));
     }
 
-    public function update(UpdateProjectRequest $request, $id)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
-        $project = Project::findOrFail($id);
-
         $this->authorize('update', $project);
 
         $validated = $request->validated();
@@ -67,10 +63,8 @@ class ProjectController extends Controller
         return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
     }
 
-    public function destroy($id)
+    public function destroy(Project $project)
     {
-        $project = Project::findOrFail($id);
-
         $this->authorize('delete', $project);
 
         $project->delete();

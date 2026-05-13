@@ -8,7 +8,10 @@ use App\Models\User;
 use App\Models\Comment;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Mail\TaskAssigned;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 
 class TaskController extends Controller
 {
@@ -29,47 +32,68 @@ class TaskController extends Controller
     {
         $validated = $request->validated();
 
-        $project->tasks()->create($validated);
+        if ($request->hasFile('attachment')) {
+            $validated['attachment_path'] = $request->file('attachment')->store('attachments', 'public');
+        }
+
+        $task = $project->tasks()->create($validated);
+
+        if ($task->assigned_to_id) {
+            $assignee = User::find($task->assigned_to_id);
+            if ($assignee) {
+                Mail::to($assignee->email)->send(new TaskAssigned($task));
+            }
+        }
 
         return redirect()->route('projects.show', $project)->with('success', 'Task created successfully.');
     }
 
-    public function show($id)
+    public function show(Project $project, Task $task)
     {
-        $task = Task::with(['project', 'assignee', 'comments.user'])->findOrFail($id);
+        $task = Task::with(['project', 'assignee', 'comments.user'])->findOrFail($task->id);
         
         $this->authorize('view', $task);
 
         return view('tasks.show', compact('task'));
     }
 
-    public function edit($id)
+    public function edit(Project $project, Task $task)
     {
-        $task = Task::findOrFail($id);
-        
         $this->authorize('update', $task);
 
         $users = User::all();
         return view('tasks.edit', compact('task', 'users'));
     }
 
-    public function update(UpdateTaskRequest $request, $id)
+    public function update(UpdateTaskRequest $request, Project $project, Task $task)
     {
-        $task = Task::findOrFail($id);
-
         $this->authorize('update', $task);
 
         $validated = $request->validated();
 
+        $oldAssignedTo = $task->assigned_to_id;
+
+        if ($request->hasFile('attachment')) {
+            if ($task->attachment_path) {
+                Storage::disk('public')->delete($task->attachment_path);
+            }
+            $validated['attachment_path'] = $request->file('attachment')->store('attachments', 'public');
+        }
+
         $task->update($validated);
 
-        return redirect()->route('projects.show', $task->project_id)->with('success', 'Task updated successfully.');
+        if ($task->assigned_to_id && $task->assigned_to_id !== $oldAssignedTo) {
+            $assignee = User::find($task->assigned_to_id);
+            if ($assignee) {
+                Mail::to($assignee->email)->send(new TaskAssigned($task));
+            }
+        }
+
+        return redirect()->route('tasks.show', [$project, $task])->with('success', 'Task updated successfully.');
     }
 
-    public function destroy($id)
+    public function destroy(Project $project, Task $task)
     {
-        $task = Task::findOrFail($id);
-        
         $this->authorize('delete', $task);
 
         $projectId = $task->project_id;

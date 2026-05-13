@@ -26,7 +26,7 @@ Route::middleware('guest')->group(function () {
 
         $request->session()->regenerate();
 
-        return redirect()->intended('/dashboard');
+        return redirect()->intended(\App\Providers\RouteServiceProvider::HOME);
     });
 
     Route::get('/register', function () {
@@ -49,7 +49,7 @@ Route::middleware('guest')->group(function () {
 
         Auth::login($user);
 
-        return redirect('/dashboard');
+        return redirect(\App\Providers\RouteServiceProvider::HOME);
     });
 });
 

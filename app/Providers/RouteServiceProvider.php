@@ -12,7 +12,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/projects';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
@@ -21,6 +21,10 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Explicitly bind models for route model binding
+        Route::model('project', \App\Models\Project::class);
+        Route::model('task', \App\Models\Task::class);
+
         $this->routes(function () {
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));

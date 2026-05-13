@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('projects.tasks.store', $project) }}">
+                <form method="POST" action="{{ route('projects.tasks.store', $project) }}" enctype="multipart/form-data">
                     @csrf
 
                     <div class="mb-4">
@@ -58,6 +58,14 @@
                             @endforeach
                         </select>
                         @error('assigned_to_id')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="attachment" class="block text-sm font-medium text-gray-700">Attachment</label>
+                        <input type="file" name="attachment" id="attachment" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        @error('attachment')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
