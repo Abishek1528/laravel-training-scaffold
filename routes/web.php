@@ -46,20 +46,7 @@ Route::middleware('auth')->group(function () {
     // Comment Route
     Route::post('comments', [TaskController::class, 'storeComment'])->name('comments.store');
 
-    Route::get('/make-admin', function () {
-
-    $user = \App\Models\User::where('email', 'shankar@gmail.com')->first();
-
-    if (!$user) {
-        return 'User not found';
-    }
-
-    $user->role = 'admin';
-
-    $user->save();
-
-    return 'Admin updated successfully';
-});
+ 
     // Admin Only Routes
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin/dashboard', function () {
