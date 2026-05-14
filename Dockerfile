@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     gnupg \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd
 
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
