@@ -109,4 +109,7 @@ grep -rn "TODO Day" --include="*.php" --include="*.blade.php"
 This scaffold was adapted from [Task-management-app---Laravel-10 by UmerFarooq966](https://github.com/UmerFarooq966/Task-management-app---Laravel-10),
 used here for educational purposes. Thanks to the original author.
 
+
+**Deployed Link :** https://laravel-task-management.onrender.com
+
 Good luck.
